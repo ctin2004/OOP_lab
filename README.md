@@ -1,1 +1,1 @@
-# OOP_lab
+# OOP - 2D GAME PROJECT
