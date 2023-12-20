@@ -14,16 +14,9 @@ public class GamePanel extends JPanel {
 	private Game game;
 
 	public GamePanel(Game game) {
-
-		super(); // JPanel calls paintComponent
-
-		this.setFocusable(true); /*this method to make sure it focus*/
-		this.requestFocus(); /*this method sometimes does not work in right way in Window*/
-		setPanelSize();
-
-		this.game = game;
-
 		mouseInputs = new MouseInputs(this);
+		this.game = game;
+		setPanelSize();
 		addKeyListener(new KeyboardInputs(this));
 		addMouseListener(mouseInputs);
 		addMouseMotionListener(mouseInputs);

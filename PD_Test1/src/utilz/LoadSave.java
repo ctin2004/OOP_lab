@@ -11,7 +11,7 @@ import main.Game;
 
 public class LoadSave {
 
-	public static final String PLAYER_ATLAS = "player_sprites1.png";
+	public static final String PLAYER_ATLAS = "player_sprites.png";
 	public static final String LEVEL_ATLAS = "outside_sprites.png";
 	public static final String LEVEL_ONE_DATA = "level_one_data.png";
 
@@ -19,8 +19,7 @@ public class LoadSave {
 		BufferedImage img = null;
 		InputStream is = LoadSave.class.getResourceAsStream("/" + fileName);
 		try {
-            assert is != null;
-            img = ImageIO.read(is);
+			img = ImageIO.read(is);
 
 		} catch (IOException e) {
 			e.printStackTrace();
