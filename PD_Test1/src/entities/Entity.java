@@ -16,7 +16,7 @@ public abstract class Entity {
 		this.height = height;
 	}
 	protected void drawHitbox(Graphics g) {
-		g.setColor(Color.BLACK);
+		g.setColor(Color.PINK);
 		g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
 	}
 	protected void initHitbox(float x, float y, float width, float height) {
