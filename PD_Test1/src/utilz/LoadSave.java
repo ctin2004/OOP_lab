@@ -11,13 +11,13 @@ import main.Game;
 
 public class LoadSave {
 
-	public static final String PLAYER_ATLAS = "res/player_sprites1.png";
-	public static final String LEVEL_ATLAS = "res/outside_sprites.png";
-	public static final String LEVEL_ONE_DATA = "res/level_one_data.png";
+	public static final String PLAYER_ATLAS = "player_sprites1.png";
+	public static final String LEVEL_ATLAS = "outside_sprites.png";
+	public static final String LEVEL_ONE_DATA = "level_one_data.png";
 
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;
-		InputStream is = LoadSave.class.getResourceAsStream(fileName);
+		InputStream is = LoadSave.class.getResourceAsStream("res/"+fileName);
 		try {
             assert is != null;
             img = ImageIO.read(is);
