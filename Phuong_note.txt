@@ -1,0 +1,2 @@
+- player not move in y-axis , now jump 
+- refactor file res into ultiz since some devices(my devices) cannot read the file unexplicitly

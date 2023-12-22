@@ -17,7 +17,7 @@ public class LoadSave {
 
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;
-		InputStream is = LoadSave.class.getResourceAsStream("/" + fileName);
+		InputStream is = LoadSave.class.getResourceAsStream("res/"+fileName);
 		try {
             assert is != null;
             img = ImageIO.read(is);

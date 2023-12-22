@@ -1,5 +1,6 @@
 package utilz;
 
+import java.awt.geom.Rectangle2D;
 import main.Game;
 
 public class HelpMethods {
@@ -32,5 +33,46 @@ public class HelpMethods {
             return true;
 
         return false;
+    }
+
+
+    // add new methods
+
+    //calculate next x-pos for player next to a wall
+    public static float GetEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed) {
+        int currentTile = (int) (hitbox.x / Game.TILES_SIZE);
+        // check x-axis speed
+        if (xSpeed > 0) {
+            // Right
+            int tileXPos = currentTile * Game.TILES_SIZE;
+            // distance btw the right edge of the tile to the right of the hitbox
+            int xOffset = (int) (Game.TILES_SIZE - hitbox.width);
+            return tileXPos + xOffset - 1; //-1: adjust to fit the edge
+        } else
+            // Left or other direction, return x-coordinate of the left side
+            return currentTile * Game.TILES_SIZE;
+    }
+
+    public static float GetEntityYPosUnderRoofOrAboveFloor(Rectangle2D.Float hitbox, float airSpeed) {
+        int currentTile = (int) (hitbox.y / Game.TILES_SIZE);
+        if (airSpeed > 0) {
+            // Falling - touching floor
+            int tileYPos = currentTile * Game.TILES_SIZE;
+            int yOffset = (int) (Game.TILES_SIZE - hitbox.height);
+            return tileYPos + yOffset - 1; //-1: adjust to fit the ground
+        } else
+            // Jumping
+            return currentTile * Game.TILES_SIZE;
+
+    }
+
+    public static boolean IsEntityOnFloor(Rectangle2D.Float hitbox, int[][] lvlData) {
+        // Check the pixel below bottomleft and bottomright
+        if (!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
+            if (!IsSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
+                return false;
+
+        return true;
+
     }
 }
