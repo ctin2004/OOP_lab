@@ -52,8 +52,8 @@ public class Player extends Entity {
 		setAnimation();
 	}
 
-	public void render(Graphics g, int lvlOffset) {
-		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xOffSet)-lvlOffset,
+	public void render(Graphics g) {
+		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xOffSet),
 				(int) (hitbox.y - yOffSet), width, height, null);
 //		drawHitbox(g); delete the hitbox around the player
 	}
