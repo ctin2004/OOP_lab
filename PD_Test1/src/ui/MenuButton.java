@@ -44,7 +44,7 @@ public class MenuButton {
         index = 0;
         if (mouseOver)
             index = 1;
-        if (mousePressed);
+        if (mousePressed)
             index = 2;
     }
 
