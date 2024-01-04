@@ -1,3 +1,5 @@
 - Stradegy pattern is applied for loadAnimations functions, it is independent, so no bug will occur, just ignore it if u dont understand.
 - The image of "Running" cut the below img -> need fix
 - The img of "Attack_1" is not stable -> someday i will fix
+
+- nothing changes in Enemies Part -> someday i will update it
