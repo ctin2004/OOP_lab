@@ -1,2 +1,5 @@
-- player not move in y-axis , now jump 
-- refactor file res into ultiz since some devices(my devices) cannot read the file unexplicitly
+- The player not move in y-axis, now jump 
+- refactor file res into ultiz since some devices(my devices) cannot read the file inexplicitly
+
+*Note:
+- need to change the height of player's jump

@@ -2,9 +2,12 @@ package entities;
 
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.*;
-import java.awt.Graphics;
+
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import gamestates.Playing;
 import main.Game;
 import utilz.LoadSave;
 
@@ -19,12 +22,10 @@ public class Player extends Entity {
 	private int playerAction = IDLE;
 	private boolean moving = false, attacking = false;
 	private boolean left, up, right, down, jump;
-	private float playerSpeed = 2.0f;
+	private float playerSpeed = 1.0f *Game.SCALE ;
 	private int[][] lvlData;
 	private float xDrawOffset = 21 * Game.SCALE;
 	private float yDrawOffset = 4 * Game.SCALE;
-
-	private iDisplay iDisplay;
 
 
 	// Jumping / Gravity
@@ -34,26 +35,104 @@ public class Player extends Entity {
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 	private boolean inAir = false;
 
-	private float xOffSet = 21 * Game.SCALE; // smaller hitbox width for player
-	private float yOffSet = 4 * Game.SCALE; // smaller hitbox height for player
+	// StatusBarUI
+	private BufferedImage statusBarImg;
+
+	private int statusBarWidth = (int) (192 * Game.SCALE);
+	private int statusBarHeight = (int) (58 * Game.SCALE);
+	private int statusBarX = (int) (10 * Game.SCALE);
+	private int statusBarY = (int) (10 * Game.SCALE);
+
+	private int healthBarWidth = (int) (150 * Game.SCALE);
+	private int healthBarHeight = (int) (4 * Game.SCALE);
+	private int healthBarXStart = (int) (34 * Game.SCALE);
+	private int healthBarYStart = (int) (14 * Game.SCALE);
+
+	private int maxHealth = 100;
+	private int currentHealth = maxHealth;
+	private int healthWidth = healthBarWidth;
+
+	// AttackBox
+	private Rectangle2D.Float attackBox;
+
+	private int flipX = 0;
+	private int flipW = 1;
+
+	private boolean attackChecked;
+	private Playing playing;
 
 
-	public Player(float x, float y, int width, int height) {
+	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
+		this.playing = playing;
 		loadAnimations();
-		initHitbox(x, y, 20 * Game.SCALE, 28 * Game.SCALE );
+		// we have to change this bcs 28* Game.Scale 1.5 = decimal value -false
+		initHitbox(x, y, (int)(20 * Game.SCALE), (int)(28 * Game.SCALE ));
+		initAttackBox();
+
+	}
+
+	private void initAttackBox() {
+		attackBox = new Rectangle2D.Float(x, y, (int) (20 * Game.SCALE), (int) (20 * Game.SCALE));
 	}
 
 	public void update() {
+		updateHealthBar();
+
+		if (currentHealth <= 0) {
+			playing.setGameOver(true);
+			return;
+		}
+
+		updateAttackBox();
+
 		updatePos();
+		if (attacking)
+			checkAttack();
+
 		updateAnimationTick();
 		setAnimation();
 	}
 
-	public void render(Graphics g) {
-		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xOffSet),
-				(int) (hitbox.y - yOffSet), width, height, null);
-//		drawHitbox(g); delete the hitbox around the player
+	private void checkAttack() {
+		if (attackChecked || aniIndex != 1)
+			return;
+		attackChecked = true;
+		playing.checkEnemyHit(attackBox);
+
+	}
+
+	private void updateAttackBox() {
+		if (right)
+			attackBox.x = hitbox.x + hitbox.width + (int) (Game.SCALE * 10);
+		else if (left)
+			attackBox.x = hitbox.x - hitbox.width - (int) (Game.SCALE * 10);
+
+		attackBox.y = hitbox.y + (Game.SCALE * 10);
+	}
+
+	private void updateHealthBar() {
+		healthWidth = (int) ((currentHealth / (float) maxHealth) * healthBarWidth);
+	}
+
+
+	public void render(Graphics g, int lvlOffset) {
+		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) - lvlOffset + flipX, (int) (hitbox.y - yDrawOffset), width * flipW, height, null);
+		drawHitbox(g, lvlOffset);
+		drawAttackBox(g, lvlOffset);
+		drawUI(g);
+	}
+
+	private void drawAttackBox(Graphics g, int lvlOffsetX) {
+		g.setColor(Color.red);
+		g.drawRect((int) attackBox.x - lvlOffsetX, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
+
+	}
+
+	private void drawUI(Graphics g) {
+		g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
+		g.setColor(Color.red);
+		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
 	}
 
 	private void updateAnimationTick() {
@@ -64,6 +143,7 @@ public class Player extends Entity {
 			if (aniIndex >= GetSpriteAmount(playerAction)) {
 				aniIndex = 0;
 				attacking = false;
+				attackChecked = false;
 			}
 
 		}
@@ -78,13 +158,6 @@ public class Player extends Entity {
 		else
 			playerAction = IDLE;
 
-		if (attacking)
-			playerAction = ATTACK_1;
-
-		if (startAni != playerAction)
-			resetAniTick();
-
-
 		if (inAir) {
 			/*player now in air & move upward: jump */
 			if (airSpeed < 0)
@@ -94,6 +167,17 @@ public class Player extends Entity {
 			else
 				playerAction = FALLING;
 		}
+
+		if (attacking) {
+			playerAction = ATTACK;
+			if (startAni != ATTACK) {
+				aniIndex = 1;
+				aniTick = 0;
+				return;
+			}
+		}
+		if (startAni != playerAction)
+			resetAniTick();
 	}
 
 	private void resetAniTick() {
@@ -106,15 +190,23 @@ public class Player extends Entity {
 
 		if (jump)
 			jump();
-		if (!left && !right && !inAir)
-			return;
+
+		if (!inAir)
+			if ((!left && !right) || (right && left))
+				return;
 
 		float xSpeed = 0; // deleted ySpeed
 
-		if (left)
+		if (left) {
 			xSpeed -= playerSpeed;
-		if (right)
+			flipX = width;
+			flipW = -1;
+		}
+		if (right) {
 			xSpeed += playerSpeed;
+			flipX = 0;
+			flipW = 1;
+		}
 
 		if (!inAir)
 			if (!IsEntityOnFloor(hitbox, lvlData))
@@ -162,9 +254,21 @@ public class Player extends Entity {
 
 	}
 
+	public void changeHealth(int value) {
+		currentHealth += value;
+
+		if (currentHealth <= 0)
+			currentHealth = 0;
+		else if (currentHealth >= maxHealth)
+			currentHealth = maxHealth;
+	}
+
 	private void loadAnimations() {
-		iDisplay = new DisplayChar1();
-		iDisplay.loadAnimations(this);
+		iDisplay displayChar1 = new DisplayChar1();
+		displayChar1.loadAnimations(this);
+
+		statusBarImg = LoadSave.GetSpriteAtlas(LoadSave.STATUS_BAR);
+
 	}
 	public void loadLvlData(int[][] lvlData) {
 		this.lvlData = lvlData;
@@ -220,5 +324,19 @@ public class Player extends Entity {
 		this.jump = jump;
 	}
 
+	public void resetAll() {
+		resetDirBooleans();
+		inAir = false;
+		attacking = false;
+		moving = false;
+		playerAction = IDLE;
+		currentHealth = maxHealth;
+
+		hitbox.x = x;
+		hitbox.y = y;
+
+		if (!IsEntityOnFloor(hitbox, lvlData))
+			inAir = true;
+	}
 
 }
