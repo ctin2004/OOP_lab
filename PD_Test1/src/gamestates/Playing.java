@@ -11,7 +11,9 @@ import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
+import objects.ObjectManager;
 import ui.GameOverOverlay;
+import ui.LevelCompletedOverlay;
 import ui.PauseOverlay;
 import utilz.LoadSave;
 import static utilz.Constants.Environment.*;
@@ -20,18 +22,19 @@ public class Playing extends State implements Statemethods {
 	private Player player;
 	private LevelManager levelManager;
 	private EnemyManager enemyManager;
+	private ObjectManager objectManager;
 	private PauseOverlay pauseOverlay;
 	private GameOverOverlay gameOverOverlay;
-	private boolean paused =false;
+	private LevelCompletedOverlay levelCompletedOverlay;
+	private boolean paused = false;
+	private boolean levelCompleted;
 
 	private int xLvlOffset;
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
 	private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-	private int lvlTilesWide = LoadSave.GetLevelData()[0].length;
-	private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
-	private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
+	private int maxLvlOffsetX;
 
-	private BufferedImage backgroundImg,bigCloud,smallCloud;
+	private BufferedImage backgroundImg, bigCloud, smallCloud;
 	private int smallCloudPos[];
 	private Random rnd = new Random();
 
@@ -48,21 +51,53 @@ public class Playing extends State implements Statemethods {
 		smallCloudPos = new int[8];
 		for (int i = 0; i < smallCloudPos.length; i++)
 			smallCloudPos[i] = (int) (90 *Game.SCALE) + rnd.nextInt((int)(150* Game.SCALE));
+
+		calcLevelOffset();
+		loadStartLevel();
+	}
+
+	private void loadStartLevel() {
+
+		enemyManager.loadEnemies(levelManager.getCurrentLevel());
+		objectManager.loadObjects(levelManager.getCurrentLevel());
+	}
+	public void loadNextLevel() {
+		resetAll();
+		levelManager.loadNextLevel();
+		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+	}
+	private void calcLevelOffset() {
+		maxLvlOffsetX = levelManager.getCurrentLevel().getLevelOffset();
 	}
 
 	private void initClasses() {
 		levelManager = new LevelManager(game);
 		enemyManager = new EnemyManager(this);
+		objectManager = new ObjectManager(this);
 		player = new Player(200, 200, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE), this);
 		player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
+		levelCompletedOverlay = new LevelCompletedOverlay(this);
 
 	}
 
 	@Override
 	public void update() {
-		if (!paused && !gameOver) {
+		if (paused)
+			pauseOverlay.update();
+		else if (levelCompleted)
+			levelCompletedOverlay.update();
+		else if (!gameOver) {
+			levelManager.update();
+			objectManager.update();
+			player.update();
+			enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
+			checkCloseToBorder();
+		}
+
+		if (!paused && !gameOver && !levelCompleted) {
 			levelManager.update();
 			player.update();
 			enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
@@ -96,6 +131,7 @@ public class Playing extends State implements Statemethods {
 		levelManager.draw(g,xLvlOffset);
 		player.render(g,xLvlOffset);
 		enemyManager.draw(g, xLvlOffset);
+		objectManager.draw(g, xLvlOffset);
 
 		if (paused){
 			g.setColor(new Color(0, 0, 0, 150));
@@ -103,7 +139,8 @@ public class Playing extends State implements Statemethods {
 			pauseOverlay.draw(g);
 		} else if (gameOver)
 			gameOverOverlay.draw(g);
-
+		else if (levelCompleted)
+			levelCompletedOverlay.draw(g);
 	}
 
 	private void drawClouds(Graphics g) {
@@ -119,8 +156,10 @@ public class Playing extends State implements Statemethods {
 	public void resetAll() {
 		gameOver = false;
 		paused = false;
+		levelCompleted = false;
 		player.resetAll();
 		enemyManager.resetAllEnemies();
+		objectManager.resetAllObjects();
 	}
 
 	public void setGameOver(boolean gameOver) {
@@ -130,7 +169,12 @@ public class Playing extends State implements Statemethods {
 	public void checkEnemyHit(Rectangle2D.Float attackBox) {
 		enemyManager.checkEnemyHit(attackBox);
 	}
-
+	public void checkPotionTouched(Rectangle2D.Float hitbox) {
+		objectManager.checkObjectTouched(hitbox);
+	}
+	public void checkObjectHit(Rectangle2D.Float attackBox) {
+		objectManager.checkObjectHit(attackBox);
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -162,18 +206,18 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_A:
-			player.setLeft(false);
-			break;
-		case KeyEvent.VK_D:
-			player.setRight(false);
-			break;
-		case KeyEvent.VK_SPACE:
-			player.setJump(false);
-			break;
-		}
-
+		if (!gameOver)
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_A:
+					player.setLeft(false);
+					break;
+				case KeyEvent.VK_D:
+					player.setRight(false);
+					break;
+				case KeyEvent.VK_SPACE:
+					player.setJump(false);
+					break;
+			}
 	}
 	public void mouseDragged(MouseEvent e) {
 		if (!gameOver)
@@ -182,16 +226,22 @@ public class Playing extends State implements Statemethods {
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (!gameOver)
+		if (!gameOver) {
 			if (paused)
 				pauseOverlay.mousePressed(e);
+			else if (levelCompleted)
+				levelCompletedOverlay.mousePressed(e);
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (!gameOver)
+		if (!gameOver) {
 			if (paused)
 				pauseOverlay.mouseReleased(e);
+			else if (levelCompleted)
+				levelCompletedOverlay.mouseReleased(e);
+		}
 	}
 
 	@Override
@@ -199,6 +249,8 @@ public class Playing extends State implements Statemethods {
 		if (!gameOver)
 			if (paused)
 				pauseOverlay.mouseMoved(e);
+			else if (levelCompleted)
+				levelCompletedOverlay.mouseMoved(e);
 	}
 	public void unpauseGame() {
 		paused = false;
@@ -206,9 +258,23 @@ public class Playing extends State implements Statemethods {
 	public void windowFocusLost() {
 		player.resetDirBooleans();
 	}
+	public void setLevelCompleted(boolean completed) {
+		this.levelCompleted = completed;
+	}
+	public void setMaxLevelOffset(int lvlOffset) {
+		this.maxLvlOffsetX = lvlOffset;
+	}
 
 	public Player getPlayer() {
 		return player;
 	}
+	public EnemyManager getEnemyManager() {
+		return enemyManager;
+	}
+	public ObjectManager getObjectManager() {
+		return objectManager;
+	}
+
+
 
 }

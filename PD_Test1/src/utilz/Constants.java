@@ -3,10 +3,38 @@ package utilz;
 import main.Game;
 
 public class Constants {
+	public static final float GRAVITY = 0.03f * Game.SCALE;
+	public static final int ANI_SPEED = 35;
+
+	public static class ObjectsConstants {
+		public static final int RED_POTION = 0;
+		public static final int BLUE_POTION = 1;
+		public static final int BARREL = 2;
+		public static final int BOX = 3;
+
+		public static final int RED_POTION_VALUE = 15; // health up by 10
+		public static final int BLUE_POTION_VALUE = 15; // power up by 15
+
+		// SIZE FOR CONTAINER
+		public static final int CONTAINER_WIDTH = (int) (Game.SCALE * 40); // container WIDTH default = 40
+		public static final int CONTAINER_HEIGHT = (int) (Game.SCALE * 30); // container HEIGHT default = 30
+		// SIZE FOR POTION
+		public static final int POTION_WIDTH = (int) (Game.SCALE * 12); // potion WIDTH default = 12
+		public static final int POTION_HEIGHT = (int) (Game.SCALE * 16); // potion HEIGHT default = 16
+		public static int GetSpriteAmount(int object_type) {
+			switch (object_type) {
+				case RED_POTION, BLUE_POTION:
+					return 7;
+				case BARREL, BOX:
+					return 8;
+				default:
+					return 1;
+			}
+		}
+	}
 
 	public static class EnemyConstants {
 		public static final int CRABBY = 0;
-
 		public static final int IDLE = 0;
 		public static final int RUNNING = 1;
 		public static final int ATTACK = 2;
