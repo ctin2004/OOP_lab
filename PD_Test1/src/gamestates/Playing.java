@@ -91,7 +91,7 @@ public class Playing extends State implements Statemethods {
 			levelCompletedOverlay.update();
 		else if (!gameOver) {
 			levelManager.update();
-			objectManager.update();
+			objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
 			player.update();
 			enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
 			checkCloseToBorder();
@@ -175,6 +175,10 @@ public class Playing extends State implements Statemethods {
 	public void checkObjectHit(Rectangle2D.Float attackBox) {
 		objectManager.checkObjectHit(attackBox);
 	}
+	public void checkSpikesTouched(Player p) {
+		objectManager.checkSpikesTouched(p);
+    }
+
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -274,7 +278,11 @@ public class Playing extends State implements Statemethods {
 	public ObjectManager getObjectManager() {
 		return objectManager;
 	}
+	public LevelManager getLevelManager(){
+		return levelManager;
+	}
 
+   
 
 
 }

@@ -7,7 +7,6 @@ import java.awt.geom.Rectangle2D;
 
 import static utilz.Constants.ANI_SPEED;
 import static utilz.Constants.ObjectsConstants.*;
-import static utilz.Constants.ObjectsConstants.GetSpriteAmount;
 
 public class GameObjects {
     protected int x, y, objType;
@@ -39,7 +38,9 @@ public class GameObjects {
                 if (objType == BARREL || objType == BOX ) {
                     doAnimation = false;
                     active = false;
-                }
+                }  else if (objType == CANNON_LEFT || objType == CANNON_RIGHT)
+					doAnimation = false;
+			
             }
         }
     }
@@ -47,7 +48,7 @@ public class GameObjects {
         aniTick = 0;
         aniIndex = 0;
         active = true;
-        if (objType == BARREL || objType == BOX ) {
+        if (objType == BARREL || objType == BOX || objType == CANNON_LEFT || objType == CANNON_RIGHT) {
             doAnimation = false; // containers
         } else
             doAnimation = true; // potions
@@ -77,6 +78,9 @@ public class GameObjects {
     }
     public int getAniIndex() {
         return aniIndex;
+    }
+    public int getAniTick(){
+        return aniTick;
     }
 
 }
