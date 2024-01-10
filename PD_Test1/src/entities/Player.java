@@ -83,8 +83,20 @@ public class Player extends Entity {
 	public void update() {
 		updateHealthBar();
 
+		//zero health: set the animation tick, index = 0
 		if (currentHealth <= 0) {
-			playing.setGameOver(true);
+			if(state != DEAD){
+				state = DEAD;
+				aniTick = 0;
+				aniIndex = 0;
+				playing.setPlayerDying(true); 
+			}
+			// at end of animation, set GameOver
+			else if(aniIndex == GetSpriteAmount(DEAD) - 1 && aniTick >= ANI_SPEED - 1){ //index start from 0, -1 to not outbounds
+				playing.setGameOver(true);
+			}else{
+				updateAnimationTick();
+			}
 			return;
 		}
 

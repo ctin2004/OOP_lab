@@ -28,6 +28,7 @@ public class Playing extends State implements Statemethods {
 	private LevelCompletedOverlay levelCompletedOverlay;
 	private boolean paused = false;
 	private boolean levelCompleted;
+	private boolean playerDying;
 
 	private int xLvlOffset;
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
@@ -89,7 +90,12 @@ public class Playing extends State implements Statemethods {
 			pauseOverlay.update();
 		else if (levelCompleted)
 			levelCompletedOverlay.update();
-		else if (!gameOver) {
+		else if(gameOver)
+			gameOverOverlay.update();
+		else if(playerDying){
+			player.update();
+		}
+		else {
 			levelManager.update();
 			objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
 			player.update();
@@ -157,6 +163,7 @@ public class Playing extends State implements Statemethods {
 		gameOver = false;
 		paused = false;
 		levelCompleted = false;
+		playerDying = false; // player alive in new game after die
 		player.resetAll();
 		enemyManager.resetAllEnemies();
 		objectManager.resetAllObjects();
@@ -235,6 +242,8 @@ public class Playing extends State implements Statemethods {
 				pauseOverlay.mousePressed(e);
 			else if (levelCompleted)
 				levelCompletedOverlay.mousePressed(e);
+		}else{
+			gameOverOverlay.mousePressed(e);
 		}
 	}
 
@@ -245,6 +254,8 @@ public class Playing extends State implements Statemethods {
 				pauseOverlay.mouseReleased(e);
 			else if (levelCompleted)
 				levelCompletedOverlay.mouseReleased(e);
+		}else{
+			gameOverOverlay.mouseReleased(e);
 		}
 	}
 
@@ -255,6 +266,9 @@ public class Playing extends State implements Statemethods {
 				pauseOverlay.mouseMoved(e);
 			else if (levelCompleted)
 				levelCompletedOverlay.mouseMoved(e);
+		else{
+			gameOverOverlay.mouseMoved(e);
+		}
 	}
 	public void unpauseGame() {
 		paused = false;
@@ -282,7 +296,8 @@ public class Playing extends State implements Statemethods {
 		return levelManager;
 	}
 
-   
-
+    public void setPlayerDying(boolean playerDying) {
+		this.playerDying = playerDying;
+    }
 
 }
