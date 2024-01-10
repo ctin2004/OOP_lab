@@ -29,7 +29,7 @@ public class Player extends Entity {
 
 
 	// Jumping / Gravity
-	private float jumpSpeed = -2.25f * Game.SCALE;
+	private float jumpSpeed = -2.55f * Game.SCALE; // fix jump height to pass the terrain, = jumpheight
 	private float fallSpeedAfterCollision = 0.1f * Game.SCALE;
 
 	// StatusBarUI
@@ -225,8 +225,8 @@ public class Player extends Entity {
 
 		if (inAir) {
 			if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
-				hitbox.y += airSpeed;
-				airSpeed += GRAVITY;
+				hitbox.y += airSpeed * 0.5f;
+				airSpeed += GRAVITY * 0.5f;
 				updateXPos(xSpeed);
 			} else {
 				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
