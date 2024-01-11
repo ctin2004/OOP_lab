@@ -29,7 +29,7 @@ public class Player extends Entity {
 
 
 	// Jumping / Gravity
-	private float jumpSpeed = -2.25f * Game.SCALE;
+	private float jumpSpeed = -2.55f * Game.SCALE; // fix jump height to pass the terrain, = jumpheight
 	private float fallSpeedAfterCollision = 0.1f * Game.SCALE;
 
 	// StatusBarUI
@@ -52,6 +52,8 @@ public class Player extends Entity {
 
 	private boolean attackChecked;
 	private Playing playing;
+
+	private int tileY = 0;
 
 
 	public Player(float x, float y, int width, int height, Playing playing) {
@@ -81,8 +83,20 @@ public class Player extends Entity {
 	public void update() {
 		updateHealthBar();
 
+		//zero health: set the animation tick, index = 0
 		if (currentHealth <= 0) {
-			playing.setGameOver(true);
+			if(state != DEAD){
+				state = DEAD;
+				aniTick = 0;
+				aniIndex = 0;
+				playing.setPlayerDying(true); 
+			}
+			// at end of animation, set GameOver
+			else if(aniIndex == GetSpriteAmount(DEAD) - 1 && aniTick >= ANI_SPEED - 1){ //index start from 0, -1 to not outbounds
+				playing.setGameOver(true);
+			}else{
+				updateAnimationTick();
+			}
 			return;
 		}
 
@@ -91,6 +105,8 @@ public class Player extends Entity {
 		updatePos();
 		if (moving) {
 			checkPotiontouched();
+			checkSpikesTouched();
+			tileY = (int) (hitbox.y / Game.TILES_SIZE);
 		}
 		if (attacking)
 			checkAttack();
@@ -99,6 +115,9 @@ public class Player extends Entity {
 		setAnimation();
 	}
 
+	private void checkSpikesTouched() {
+		playing.checkSpikesTouched(this);
+	}
 	private void checkPotiontouched() {
 		playing.checkPotionTouched(hitbox);
 	}
@@ -218,8 +237,8 @@ public class Player extends Entity {
 
 		if (inAir) {
 			if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
-				hitbox.y += airSpeed;
-				airSpeed += GRAVITY;
+				hitbox.y += airSpeed * 0.5f;
+				airSpeed += GRAVITY * 0.5f;
 				updateXPos(xSpeed);
 			} else {
 				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
@@ -266,6 +285,10 @@ public class Player extends Entity {
 		else if (currentHealth >= maxHealth)
 			currentHealth = maxHealth;
 	}
+
+	public void kill() {
+		currentHealth = 0; // die
+    }
 	public void changePower(int bluePotionValue) {
 		System.out.println("blue potion add power!!");
 	}
@@ -328,6 +351,10 @@ public class Player extends Entity {
 
 		if (!IsEntityOnFloor(hitbox, lvlData))
 			inAir = true;
+	}
+    
+	public int getTileY(){
+		return tileY;
 	}
 
 }
