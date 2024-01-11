@@ -212,6 +212,9 @@ public class Playing extends State implements Statemethods {
 			case KeyEvent.VK_BACK_SPACE:
 				paused = !paused;
 				break;
+			case KeyEvent.VK_J:
+				player.setAttacking(true);
+				break;
 		}
 	}
 
@@ -228,6 +231,9 @@ public class Playing extends State implements Statemethods {
 				case KeyEvent.VK_SPACE:
 					player.setJump(false);
 					break;
+//				case KeyEvent.VK_J:
+//					player.setAttacking(false);
+//					break;
 			}
 	}
 	public void mouseDragged(MouseEvent e) {
