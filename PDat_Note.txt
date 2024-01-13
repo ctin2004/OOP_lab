@@ -1,6 +1,7 @@
 13/1/2024
 - Background of  menu and bg while playing are changed
 - additional button J,K
+- updateAttackBox's SCALE * 10 -> SCALE * 1 
 
 
 
