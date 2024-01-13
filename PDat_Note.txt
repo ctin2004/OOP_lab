@@ -1,7 +1,7 @@
 13/1/2024
 - Background of  menu and bg while playing are changed
 - additional button J,K
-
+- Fix bug that occures when you die while Jump = True -> ResetAll of Player class will now set Jump = False
 
 
 - Stradegy pattern is applied for loadAnimations functions, it is independent, so no bug will occur, just ignore it if u dont understand.
