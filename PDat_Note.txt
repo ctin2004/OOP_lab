@@ -1,3 +1,9 @@
+13/1/2024
+- Background of  menu and bg while playing are changed
+- additional button J,K
+
+
+
 - Stradegy pattern is applied for loadAnimations functions, it is independent, so no bug will occur, just ignore it if u dont understand.
 - The image of "Running" cut the below img -> need fix
 - The img of "Attack_1" is not stable -> someday i will fix
