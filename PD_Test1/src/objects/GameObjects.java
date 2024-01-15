@@ -1,6 +1,7 @@
 package objects;
 
 import main.Game;
+import utilz.LoadSave;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
