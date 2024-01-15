@@ -9,7 +9,7 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-public class LoadSave {
+public final class LoadSave {
 
 	public static final String PLAYER_ATLAS = "player_sprites1.png";
 	public static final String LEVEL_ATLAS = "outside_sprites.png";

@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import audio.AudioPlayer;
 import gamestates.Playing;
 import main.Game;
 import utilz.LoadSave;
@@ -89,11 +90,14 @@ public class Player extends Entity {
 				state = DEAD;
 				aniTick = 0;
 				aniIndex = 0;
-				playing.setPlayerDying(true); 
+				playing.setPlayerDying(true);
+				playing.getGame().getAudioPlayer().playEffect(AudioPlayer.DIE);
 			}
 			// at end of animation, set GameOver
 			else if(aniIndex == GetSpriteAmount(DEAD) - 1 && aniTick >= ANI_SPEED - 1){ //index start from 0, -1 to not outbounds
 				playing.setGameOver(true);
+				playing.getGame().getAudioPlayer().stopSong();
+				playing.getGame().getAudioPlayer().playEffect(AudioPlayer.GAMEOVER);
 			}else{
 				updateAnimationTick();
 			}
@@ -128,6 +132,7 @@ public class Player extends Entity {
 		attackChecked = true;
 		playing.checkEnemyHit(attackBox);
 		playing.checkObjectHit(attackBox);
+		playing.getGame().getAudioPlayer().playAttackSound();
 
 	}
 
@@ -257,6 +262,7 @@ public class Player extends Entity {
 	private void jump() {
 		if (inAir)
 			return;
+		playing.getGame().getAudioPlayer().playEffect(AudioPlayer.JUMP);
 		inAir = true;
 		airSpeed = jumpSpeed;
 
