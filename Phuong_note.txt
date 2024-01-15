@@ -1,5 +1,75 @@
-- The player not move in y-axis, now jump 
-- refactor file res into ultiz since some devices(my devices) cannot read the file inexplicitly
+ep11:
+- player not move in y-axis , now jump 
+- refactor file res into ultiz since some devices(my devices) cannot read the file unexplicitly
+- deleted the hitbox
 
-*Note:
-- need to change the height of player's jump
+ 
+ep20: fix 2 bugs:
+bug 1: destroy container or box => spawn potions.
+- arraylist potions in objectmana and level are the same one.
+
+we got actual number of potions.
+hit the box, container -> got potions. 
+potions then added to the array.
+when reset it supposes to reset the array
+but the potions when hit the box now still in the array.
+
+bug 2: spam attack the box, container => spawn a lot of potions which supposed to be appeared just once.
+
+in checkObjectHit, when the hitbox intersect the box, it drop a new potion.
+problem is the box animated and it still active.
+=> add 1 more condition: that it is not in an animation: deactivated.
+
+ADD TRAPS: spike: mũi nhọn, tên
+- add spike class
+- object manager changes
+
+add player method: kill -> health = 0; -> die
+
+ep21: CANNON
+
+hitbox.x -= 4*SCALE: for cannon in the center of the sprite, the tile we place it on for the cannon in the middle of the hitbox. 
+similar for hitbox. y // look like standing on the floor.
+
+
+update(): cannon do animations(shooting) if player in seight.
+
+-- shoot once -> check player in seight -> shoot||not
+updateAnimationTick(): checking above task.
+
+HELP_METHODS: getCannons(): 
+LEVELS: Cannons arraylist: 
+creatCannons(): getCannons(img) and a getCannon():
+OBJ_Manager: cannon to be displayed.
+drawCannon():
+// cannon shooting: 
+if cannot not animating (active or inactive)
+tileY is same: if player in range 
+if player infront of cannon
+check length of seight
+cannon shoot 
+
+** add the titlewide check the video did not include
+
+isPlayerInFrontOfCannon(): 
+* check player in the left size or right size of the cannon => shoot. else return false:
+CanCannonSeePlayer(): in helpmethods: 
+shootCannon(c): c.setAnimation(true):
+
+
+ep: projectiles
+create Projectile class in objects
+- fix the position of the ball from the cannons and to shoot 1 ball 1 time
+
+- ball damage and despawn/inactive when hit wall:
+
+ep: deadth screen
+- resset the animation tick and index, no need to update the box, attack, so on
+- reset the player after dead, so he not die when start new game.
+
+
+// when complete this level, can back to menu and replay or move to next.
+
+Playing class: 
+- mousePressed: when gameover try again to replay. 
+ 
