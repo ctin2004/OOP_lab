@@ -49,7 +49,7 @@ if player infront of cannon
 check length of seight
 cannon shoot 
 
-** add the titlewide check the video did not include
+** minute 21:35: add the titlewide check 
 
 isPlayerInFrontOfCannon(): 
 * check player in the left size or right size of the cannon => shoot. else return false:
@@ -58,26 +58,3 @@ shootCannon(c): c.setAnimation(true):
 
 
 ep: projectiles
-create Projectile class in objects
-- fix the position of the ball from the cannons and to shoot 1 ball 1 time
-
-- ball damage and despawn/inactive when hit wall:
-
-ep: deadth screen
-- resset the animation tick and index, no need to update the box, attack, so on
-- reset the player after dead, so he not die when start new game.
-
-
-// when complete this level, can back to menu and replay or move to next.
-
-Playing class: 
-- mousePressed: when gameover try again to replay. 
- 
-
-
-ep: power attack
- - create power bar // similar to the health bar
- - update for the power bar
- - inAir && attack then the player go straight for a distance
- - click right mouse to attack and move forward
- 
