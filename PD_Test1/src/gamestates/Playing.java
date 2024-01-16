@@ -63,9 +63,10 @@ public class Playing extends State implements Statemethods {
 		objectManager.loadObjects(levelManager.getCurrentLevel());
 	}
 	public void loadNextLevel() {
-		resetAll();
+//		resetAll();
 		levelManager.loadNextLevel();
 		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+		resetAll(); // fix bug with attackBox: reset all after setting spawn
 	}
 	private void calcLevelOffset() {
 		maxLvlOffsetX = levelManager.getCurrentLevel().getLevelOffset();
