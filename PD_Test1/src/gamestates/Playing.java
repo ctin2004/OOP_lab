@@ -26,6 +26,7 @@ public class Playing extends State implements Statemethods {
 	private PauseOverlay pauseOverlay;
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompletedOverlay levelCompletedOverlay;
+
 	private boolean paused = false;
 	private boolean levelCompleted;
 	private boolean playerDying;
@@ -82,6 +83,7 @@ public class Playing extends State implements Statemethods {
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompletedOverlay = new LevelCompletedOverlay(this);
+
 
 	}
 
