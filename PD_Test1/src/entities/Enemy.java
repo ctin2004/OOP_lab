@@ -13,8 +13,6 @@ import static utilz.HelpMethods.*;
 public abstract class Enemy extends Entity {
 	protected int enemyType;
 	protected boolean firstUpdate = true;
-//	protected float fallSpeed;
-//	protected float walkSpeed = 0.25f * Game.SCALE;
 	protected int walkDir = LEFT;
 	protected int tileY;
 	protected float attackDistance = Game.TILES_SIZE;

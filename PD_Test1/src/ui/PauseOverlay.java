@@ -28,7 +28,6 @@ public class PauseOverlay {
         
     }
 
-
     private void createUrmButtons() {
         int menuX = (int) (313 * Game.SCALE);
         int replayX = (int) (387 * Game.SCALE);
@@ -40,8 +39,6 @@ public class PauseOverlay {
         unpauseB = new UrmButton(unpauseX, bY, URM_SIZE, URM_SIZE, 0);
 
     }
-
-    
 
     private void loadBackground() {
         backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.PAUSE_BACKGROUND);
@@ -93,6 +90,7 @@ public class PauseOverlay {
 	public void mouseReleased(MouseEvent e) {
 		if (isIn(e, menuB)) {
 			if (menuB.isMousePressed()) {
+				playing.resetAll();
 				playing.setGamestate(Gamestate.MENU);
 				playing.unpauseGame();
 			}

@@ -2,10 +2,7 @@ package levels;
 
 import entities.Crabby;
 import main.Game;
-import objects.Potion;
-import objects.Spike;
-import objects.Cannon;
-import objects.GameContainer;
+import objects.*;
 import utilz.HelpMethods;
 
 import java.awt.*;
@@ -22,6 +19,7 @@ public class Level {
 	private ArrayList<Spike> spikes;
 	private ArrayList<GameContainer> containers;
 	private ArrayList<Cannon> cannons;
+
 	private int lvlTilesWide;
 	private int maxTilesOffset;
 	private int maxLvlOffsetX;
