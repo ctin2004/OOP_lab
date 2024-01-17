@@ -10,6 +10,7 @@ import gamestates.Playing;
 import ui.AudioOptions;
 
 public class Game implements Runnable {
+	private static Game instance = null; // singleton
 
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
@@ -30,7 +31,7 @@ public class Game implements Runnable {
 	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
-	public Game() {
+	private Game() {
 		initClasses();
 
 		gamePanel = new GamePanel(this);
@@ -39,7 +40,12 @@ public class Game implements Runnable {
 		gamePanel.requestFocus();
 
 		startGameLoop();
-
+	}
+	public static Game getInstance() {
+		if (instance == null) {
+			instance = new Game();
+		}
+		return instance;
 	}
 
 	private void initClasses() {
