@@ -74,12 +74,13 @@ public class Player extends Entity {
 
 	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
+		loadAnimations();
 		this.playing = playing;
 		this.state = IDLE;
 		this.maxHealth = 100;
 		this.currentHealth = maxHealth;
 		this.walkSpeed = 0.5f * Game.SCALE;
-		loadAnimations();
+
 		// we have to change this bcs 28* Game.Scale 1.5 = decimal value -false
 		initHitbox(20, 28);
 		initAttackBox();
@@ -380,7 +381,7 @@ public class Player extends Entity {
 
 	private void loadAnimations() {
 		iDisplay displayChar1 = new DisplayChar1();
-		displayChar1.loadAnimations(this);
+		this.animations = displayChar1.loadAnimations();
 
 		statusBarImg = LoadSave.GetSpriteAtlas(LoadSave.STATUS_BAR);
 
@@ -455,10 +456,10 @@ public class Player extends Entity {
     public void powerAttack() {
         if(powerAttackActive)
 			return;
-		if(powerValue >= 60)
+		if(powerValue >= 60) {
 			powerAttackActive = true;
 			changePower(-60);
-
+		}
     }
 
 }
