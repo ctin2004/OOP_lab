@@ -2,6 +2,8 @@ package entities.display;
 
 import entities.Player;
 
+import java.awt.image.BufferedImage;
+
 public interface iDisplay {
-    void loadAnimations(Player player);
+    BufferedImage[][] loadAnimations();
 }

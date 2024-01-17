@@ -1,3 +1,7 @@
+17/1/2024
+- loadAnimations in iDisplay now return the BufferedImg[][] instead of void -> change the way loadAnimation work in others class.
+- Now the Crab will load animation by the iDisplay -> applied strategy pattern like player -> all entities from now on will use iDisplay for loadAnimations
+
 13/1/2024
 - Background of  menu and bg while playing are changed
 - additional button J,K

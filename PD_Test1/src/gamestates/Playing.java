@@ -26,6 +26,7 @@ public class Playing extends State implements Statemethods {
 	private PauseOverlay pauseOverlay;
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompletedOverlay levelCompletedOverlay;
+
 	private boolean paused = false;
 	private boolean levelCompleted;
 	private boolean playerDying;
@@ -63,9 +64,10 @@ public class Playing extends State implements Statemethods {
 		objectManager.loadObjects(levelManager.getCurrentLevel());
 	}
 	public void loadNextLevel() {
-		resetAll();
+//		resetAll();
 		levelManager.loadNextLevel();
 		player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+		resetAll(); // fix bug with attackBox: reset all after setting spawn
 	}
 	private void calcLevelOffset() {
 		maxLvlOffsetX = levelManager.getCurrentLevel().getLevelOffset();
@@ -81,6 +83,7 @@ public class Playing extends State implements Statemethods {
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompletedOverlay = new LevelCompletedOverlay(this);
+
 
 	}
 

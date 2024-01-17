@@ -74,12 +74,13 @@ public class Player extends Entity {
 
 	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
+		loadAnimations();
 		this.playing = playing;
 		this.state = IDLE;
 		this.maxHealth = 100;
 		this.currentHealth = maxHealth;
 		this.walkSpeed = 0.5f * Game.SCALE;
-		loadAnimations();
+
 		// we have to change this bcs 28* Game.Scale 1.5 = decimal value -false
 		initHitbox(20, 28);
 		initAttackBox();
@@ -94,6 +95,7 @@ public class Player extends Entity {
 
 	private void initAttackBox() {
 		attackBox = new Rectangle2D.Float(x, y, (int) (20 * Game.SCALE), (int) (20 * Game.SCALE));
+		resetAttackBox();
 	}
 
 	public void update() {
@@ -163,7 +165,13 @@ public class Player extends Entity {
 	}
 
 	private void updateAttackBox() {
-		if (right || (powerAttackActive && flipW == 1))
+		if(right && left) {
+			if (flipW == 1) {
+				attackBox.x = hitbox.x + hitbox.width + (int) (Game.SCALE * 10);
+			} else {
+				attackBox.x = hitbox.x - hitbox.width - (int) (Game.SCALE * 1);
+			}
+		} else if (right || (powerAttackActive && flipW == 1))
 			attackBox.x = hitbox.x + hitbox.width + (int) (Game.SCALE * 1);
 		else if (left || (powerAttackActive && flipW == -1))
 			attackBox.x = hitbox.x - hitbox.width - (int) (Game.SCALE * 1);
@@ -278,23 +286,23 @@ public class Player extends Entity {
 		float xSpeed = 0; 
 		// deleted ySpeed
 
-		if (left) {
+		if (left && !right) {
 			xSpeed -= walkSpeed;
 			flipX = width;
 			flipW = -1;
 		}
-		if (right) {
+		if (right && !left) {
 			xSpeed += walkSpeed;
 			flipX = 0;
 			flipW = 1;
 		}
 		if(powerAttackActive){
-			if(!left && !right){ // not move to left or right, none pressed button
+			if(!left && !right || left && right){ // not move to left or right, none pressed button || both left and right
 				if(flipW == -1) // face to left side
 					xSpeed = -walkSpeed;
-				else // face to the right side 
+				else // face to the right side
 					xSpeed = walkSpeed;
-				
+
 			}
 			xSpeed *=3;
 		}
@@ -343,7 +351,7 @@ public class Player extends Entity {
 		} else {
 			// hitting a wall
 			hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
-			if(powerAttackActive){
+			if (powerAttackActive) {
 				powerAttackActive = false;
 				powerAttackTick = 0; // stay in powerAttack certain time
 			}
@@ -373,7 +381,7 @@ public class Player extends Entity {
 
 	private void loadAnimations() {
 		iDisplay displayChar1 = new DisplayChar1();
-		displayChar1.loadAnimations(this);
+		this.animations = displayChar1.loadAnimations();
 
 		statusBarImg = LoadSave.GetSpriteAtlas(LoadSave.STATUS_BAR);
 
@@ -421,15 +429,24 @@ public class Player extends Entity {
 		inAir = false;
 		attacking = false;
 		moving = false;
-		jump = false;
+		jump = false; // fix bug: dead while still jumping => new game, still jumping
+		airSpeed = 0f; // fix bug: dead while still jumping => new game, still jumping
 		state = IDLE;
 		currentHealth = maxHealth;
 
 		hitbox.x = x;
 		hitbox.y = y;
 
+		resetAttackBox();
 		if (!IsEntityOnFloor(hitbox, lvlData))
 			inAir = true;
+	}
+	private void resetAttackBox() {
+		if (flipW == 1) {
+			attackBox.x = hitbox.x + hitbox.width + (int) (Game.SCALE * 10);
+		} else {
+			attackBox.x = hitbox.x - hitbox.width - (int) (Game.SCALE * 1);
+		}
 	}
     
 	public int getTileY(){
@@ -439,10 +456,10 @@ public class Player extends Entity {
     public void powerAttack() {
         if(powerAttackActive)
 			return;
-		if(powerValue >= 60)
+		if(powerValue >= 60) {
 			powerAttackActive = true;
 			changePower(-60);
-
+		}
     }
 
 }
