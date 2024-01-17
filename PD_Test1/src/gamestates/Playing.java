@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 
 import entities.EnemyManager;
@@ -26,6 +27,7 @@ public class Playing extends State implements Statemethods {
 	private PauseOverlay pauseOverlay;
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompletedOverlay levelCompletedOverlay;
+	private ArrayList<iObservers> observers = new ArrayList<iObservers>();
 
 	private boolean paused = false;
 	private boolean levelCompleted;
@@ -83,6 +85,10 @@ public class Playing extends State implements Statemethods {
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompletedOverlay = new LevelCompletedOverlay(this);
+
+		observers.add(objectManager);
+		observers.add(player);
+		observers.add(enemyManager);
 
 
 	}
@@ -167,9 +173,10 @@ public class Playing extends State implements Statemethods {
 		paused = false;
 		levelCompleted = false;
 		playerDying = false; // player alive in new game after die
-		player.resetAll();
-		enemyManager.resetAllEnemies();
-		objectManager.resetAllObjects();
+
+		for (iObservers observer: observers){
+			observer.resetAll();
+		}
 	}
 
 	public void setGameOver(boolean gameOver) {

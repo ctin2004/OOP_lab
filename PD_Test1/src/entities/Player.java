@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 
 import audio.AudioPlayer;
 import gamestates.Playing;
+import gamestates.iObservers;
 import main.Game;
 import utilz.LoadSave;
 
@@ -19,7 +20,7 @@ import entities.display.DisplayChar1;
 import entities.display.iDisplay;
 
 
-public class Player extends Entity {
+public class Player extends Entity implements iObservers {
 	public BufferedImage[][] animations;
 	private boolean moving = false, attacking = false;
 	private boolean left, right, jump;
@@ -424,6 +425,7 @@ public class Player extends Entity {
 		this.jump = jump;
 	}
 
+	@Override
 	public void resetAll() {
 		resetDirBooleans();
 		inAir = false;

@@ -3,6 +3,7 @@ package entities;
 import entities.display.DisplayCrabEnemy;
 import entities.display.iDisplay;
 import gamestates.Playing;
+import gamestates.iObservers;
 import levels.Level;
 import utilz.LoadSave;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 import static utilz.Constants.EnemyConstants.*;
 
-public class EnemyManager {
+public class EnemyManager implements iObservers {
 
 	private Playing playing;
 	private BufferedImage[][] crabbyArr;
@@ -71,7 +72,8 @@ public class EnemyManager {
 		crabbyArr = displayCrabEnemy.loadAnimations();
 	}
 
-	public void resetAllEnemies() {
+	@Override
+	public void resetAll() {
 		for (Crabby c : crabbies)
 			c.resetEnemy();
 	}

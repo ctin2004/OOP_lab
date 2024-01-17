@@ -1,6 +1,7 @@
 package objects;
 
 import gamestates.Playing;
+import gamestates.iObservers;
 import levels.Level;
 import main.Game;
 import utilz.LoadSave;
@@ -12,13 +13,15 @@ import java.util.ArrayList;
 
 import entities.Player;
 
+import javax.security.auth.Subject;
+
 import static utilz.Constants.ObjectsConstants.*;
 import static utilz.Constants.Projectiles.CANNON_BALL_HEIGHT;
 import static utilz.Constants.Projectiles.CANNON_BALL_WIDTH;
 import static utilz.HelpMethods.CanCannonSeePlayer;
 import static utilz.HelpMethods.IsProjectileHittingLevel;
 
-public class ObjectManager {
+public class ObjectManager implements iObservers {
     private Playing playing;
     private BufferedImage[][] potionImgs, containerImgs;
     private BufferedImage spikeImg;
@@ -198,7 +201,7 @@ public class ObjectManager {
      */
     
 
-    public void resetAllObjects() {
+    public void resetAll() {
         loadObjects(playing.getLevelManager().getCurrentLevel());
         for (Potion p: potions)
             p.reset();
@@ -207,6 +210,8 @@ public class ObjectManager {
         for (Cannon c : cannons)
 			c.reset();
     }
+
+
     public void draw(Graphics g, int xLvlOffset) {
         drawPotions(g, xLvlOffset);
         drawContainers(g, xLvlOffset);
