@@ -54,14 +54,25 @@ public class ObjectManager implements iObservers {
         }
 
     }
-    public void applyEffectToPlayer(Potion p) {
+//    public void applyEffectToPlayer(Potion p) {
+//        if (p.getObjType() == RED_POTION) {
+//            playing.getPlayer().changeHealth(RED_POTION_VALUE);
+//        } else {
+//            playing.getPlayer().changePower(BLUE_POTION_VALUE);
+//        }
+//
+//    }
+
+        public void applyEffectToPlayer(Potion p) {
         if (p.getObjType() == RED_POTION) {
             playing.getPlayer().changeHealth(RED_POTION_VALUE);
         } else {
-            playing.getPlayer().changePower(BLUE_POTION_VALUE);
+            playing.setLevelCompleted(true);
         }
 
     }
+
+
     public void checkObjectHit(Rectangle2D.Float attackBox) {
         for (GameContainer c : containers) {
             if (c.isActive() && !c.doAnimation) {
