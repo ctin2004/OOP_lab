@@ -1,7 +1,8 @@
 # Mysterious Journey 
 **HCMIU - OOP Final Project - Semester 1 2023 - 2024** <br>
 Group Project: 2D RPG Game <br>
-![OOP 1](https://github.com/ctin2004/OOP_lab/assets/134122434/f81a2e07-9412-4f1e-bc91-2274f6585c32) <br>
+![OOP 1](<img width="778" alt="image" src="https://github.com/ctin2004/OOP_lab/assets/148067195/b9612d5d-9922-4c24-9511-7878cb23dad0">
+) <br>
 
 :notebook_with_decorative_cover: **About The Game** <br>
 -
