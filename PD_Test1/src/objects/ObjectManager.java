@@ -63,7 +63,7 @@ public class ObjectManager implements iObservers {
 //
 //    }
 
-        public void applyEffectToPlayer(Potion p) {
+    public void applyEffectToPlayer(Potion p) {
         if (p.getObjType() == RED_POTION) {
             playing.getPlayer().changeHealth(RED_POTION_VALUE);
         } else {
@@ -71,7 +71,6 @@ public class ObjectManager implements iObservers {
         }
 
     }
-
 
     public void checkObjectHit(Rectangle2D.Float attackBox) {
         for (GameContainer c : containers) {
